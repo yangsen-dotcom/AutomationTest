@@ -13,6 +13,11 @@ import { defineConfig, devices } from '@playwright/test';
  */
 export default defineConfig({
   testDir: './tests',
+  /* Every test here drives the real live site over the network - no local
+   * server to warm up, just real round trips (plus, on WebKit especially,
+   * a heavier browser engine). The 30s default is too tight for that under
+   * any load, so give every test more headroom regardless of worker count. */
+  timeout: 60_000,
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */

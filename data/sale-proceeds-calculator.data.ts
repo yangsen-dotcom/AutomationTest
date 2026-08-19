@@ -118,14 +118,13 @@ export const saleProceedsCalculatorForm = {
     savePdf: 'Save as PDF',
   },
 
-  // TODO(verify): a live run against an empty form did surface a match for
-  // `required`, but the exact wording/placement wasn't captured (only that
-  // the page stayed off the output URL and this pattern matched somewhere).
-  // `invalidNumber` was never exercised - see the note on invalidNumberSamples.
-  validation: {
-    required: /required|please (enter|fill|select)/,
-    invalidNumber: /valid number|invalid (value|amount|number)/,
-  },
+  // Confirmed via CI (chromium/firefox/webkit, with retries): there is no
+  // "required"/"invalid number" text anywhere in the DOM after submitting
+  // bad input - the fields carry a native HTML `required` attribute
+  // (confirmed live), so the browser's own constraint-validation UI blocks
+  // submission without the app rendering any error text of its own. TC03
+  // and TC04 assert the field's native `validity` state instead of guessing
+  // at display copy that doesn't exist.
 
   // Confirmed live: the listing price field is a masked currency input that
   // silently strips non-digit characters as you type - a leading "-" simply

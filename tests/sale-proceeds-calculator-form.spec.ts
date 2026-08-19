@@ -44,9 +44,18 @@ test.describe('Sale Proceeds Calculator - form interactions', () => {
     // Submit with every field left empty.
     await calculator.clickCalculate();
 
+    // Confirmed via CI (3 browsers, with retries): no "required"/"please..."
+    // text ever appears in the DOM here - the field's native HTML `required`
+    // attribute (confirmed live earlier) means an unfilled required field is
+    // blocked by the browser's own constraint validation, whose UI (the
+    // native tooltip) isn't part of the accessible tree at all, so no
+    // getByText locator could ever find it. Assert the real signal instead:
+    // submission was blocked, and the field itself reports the missing value.
     await expect(page).not.toHaveURL(formData.outputUrl);
-    // TODO(verify): confirm exact required-field message copy/placement.
-    await expect(page.getByText(formData.validation.required).first()).toBeVisible();
+    const isMissingRequiredValue = await calculator.listingPriceInput.evaluate(
+      (el: HTMLInputElement) => el.validity.valueMissing,
+    );
+    expect(isMissingRequiredValue).toBe(true);
   });
 
   test('TC04 - Invalid number is rejected', async ({ page }) => {
@@ -58,12 +67,15 @@ test.describe('Sale Proceeds Calculator - form interactions', () => {
 
     if (currentValue === invalidValue) {
       // The field accepted raw non-numeric text; expect validation on submit.
+      // Same reasoning as TC03: check the field's native validity state
+      // rather than guessing at display copy that may not exist in the DOM.
       await calculator.clickCalculate();
-      // TODO(verify): confirm exact invalid-number message copy/placement.
-      await expect(page.getByText(formData.validation.invalidNumber).first()).toBeVisible();
       await expect(page).not.toHaveURL(formData.outputUrl);
+      const isInvalid = await calculator.listingPriceInput.evaluate((el: HTMLInputElement) => !el.validity.valid);
+      expect(isInvalid).toBe(true);
     } else {
-      // The field filtered non-numeric characters as they were typed.
+      // The field filtered non-numeric characters as they were typed - this
+      // is the branch every observed live run has actually taken.
       expect(currentValue).not.toBe(invalidValue);
     }
   });
