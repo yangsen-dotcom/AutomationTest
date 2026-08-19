@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir \"d:\\\\proj\\\\AutomationTest\")",
+      "WebFetch(domain:homes.hdb.gov.sg)",
+      "Bash(node \"C:/Users/Ufinity/AppData/Local/Temp/claude/d--proj-AutomationTest/72d03138-a650-4b3c-bdb9-82e49525e502/scratchpad/explore.js\")",
+      "Bash(node explore.js)",
+      "Bash(node explore2.js)",
+      "Bash(node explore3.js)",
+      "WebFetch(domain:web.archive.org)",
+      "Bash(curl -s \"http://web.archive.org/cdx/search/cdx?url=homes.hdb.gov.sg/home/calculator/sale-proceeds&output=json&limit=20\" --max-time 20)",
+      "Bash(curl -s \"https://web.archive.org/cdx/search/cdx?url=homes.hdb.gov.sg/home/calculator/sale-proceeds&output=json&limit=20\" --max-time 30 -v)",
+      "Bash(node explore4.js)",
+      "Bash(node explore5.js)",
+      "Bash(node explore6.js)",
+      "Bash(node explore-live.js)",
+      "Bash(rm -f /tmp/hdb_check.html /tmp/hdb_try_*.html; npx playwright test --list 2>&1 | head -20)"
+    ],
+    "additionalDirectories": [
+      "\\tmp"
+    ]
+  }
+}
